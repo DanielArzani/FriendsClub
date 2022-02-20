@@ -25,7 +25,10 @@ mongoose.connect(DB).then(() => {
   console.log('DB connection successful');
 });
 
-// mongoose.connect('mongodb://localhost:27017/FriendsProject');
+// Un-comment this line 👇 if you want to connect locally and comment or delete the above
+// mongoose.connect('mongodb://localhost:27017/FriendsProject').then(() => {
+//   console.log('DB connection successful');
+// });
 
 // Listen for server
 const server = app.listen(port, () => {
