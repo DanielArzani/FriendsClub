@@ -65,9 +65,16 @@ exports.getThought = async (req, res) => {
  *------------------------**/
 exports.createThought = async (req, res) => {
   try {
-    const filteredObj = filter(req.body, 'thoughtText', 'username');
+    // const filteredObj = filter(req.body, 'thoughtText', 'username');
 
-    const thought = await Thought.create(filteredObj);
+    const thought = await Thought.create({
+      thoughtText: req.body.thoughtText,
+      username: req.params.userId,
+    });
+
+    const updatedUser = await User.findByIdAndUpdate(req.params.userId, {
+      $push: { thoughts: thought },
+    });
 
     res.status(201).json({
       status: 'success',

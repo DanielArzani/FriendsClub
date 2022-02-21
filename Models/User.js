@@ -15,7 +15,12 @@ const userSchema = new mongoose.Schema(
       required: [true, 'You must have an email'],
       validate: [validator.isEmail, 'Not a valid email address'],
     },
-    //   thoughts: Array,
+    thoughts: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Thought',
+      },
+    ],
     //   friends: Array,
   },
   {

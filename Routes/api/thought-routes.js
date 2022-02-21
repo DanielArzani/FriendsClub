@@ -1,11 +1,11 @@
 const router = require('express').Router();
 const thoughtController = require('../../Controllers/thought-controller');
 
-router
-  .route('/')
-  .get(thoughtController.getThoughts)
-  .post(thoughtController.createThought);
+router.route('/').get(thoughtController.getThoughts);
 
+router.route('/:userId').post(thoughtController.createThought);
+
+// /:id here is thoughtId
 router
   .route('/:id')
   .get(thoughtController.getThought)

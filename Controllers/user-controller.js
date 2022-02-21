@@ -9,7 +9,7 @@ const filter = require('../utils/filterObject');
  *------------------------**/
 exports.getUsers = async (req, res) => {
   try {
-    const users = await User.find({});
+    const users = await User.find({}).populate('thoughts');
 
     res.status(200).json({
       status: 'success',
