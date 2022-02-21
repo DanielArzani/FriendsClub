@@ -161,3 +161,70 @@ exports.deleteThought = async (req, res) => {
     });
   }
 };
+
+/**-------------------------
+ *     CREATE REACTION
+ *------------------------**/
+exports.createReaction = async (req, res) => {
+  try {
+    // 1) Find a Thought through their ID where this Reaction will be nested into
+    // 2) Set fields for what they can put into the req.body
+    // 3) $push into reactions field array
+    const filteredObj = filter(req.body, 'reactionBody', 'username');
+
+    const reaction = await Thought.findByIdAndUpdate(
+      req.params.thoughtId,
+      { $push: { reactions: filteredObj } },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        reaction,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      data: {
+        message: error,
+      },
+    });
+  }
+};
+
+/**-------------------------
+ *     DELETE REACTION
+ *------------------------**/
+exports.deleteReaction = async (req, res) => {
+  try {
+    // 1) Find a Thought through their ID and a Reaction that belongs to it through its reactionID
+    // 2) $pull from reactions field array
+    const reaction = await Thought.findByIdAndUpdate(
+      req.params.thoughtId,
+      { $pull: { reactions: req.body } },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    res.status(204).json({
+      status: 'success',
+      data: {
+        data: null,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      data: {
+        message: error,
+      },
+    });
+  }
+};

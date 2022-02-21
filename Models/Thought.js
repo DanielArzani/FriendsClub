@@ -62,9 +62,10 @@ const thoughtSchema = new mongoose.Schema(
       type: String,
       required: [true, 'A thought must have a user'],
     },
+    // Reactions to thoughts (kind of like replies)
+    // Directly nesting reactions in thoughts
+    reactions: [reactionSchema],
   },
-  // Reactions to thoughts (kind of like replies)
-  //   reactions: {}
   {
     toJSON: { virtuals: true, getters: true },
     toObject: { virtuals: true },
