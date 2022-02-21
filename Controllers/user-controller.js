@@ -1,7 +1,7 @@
 // Here to make so I can have autocomplete while coding
 const mongoose = require('mongoose');
 
-const { User } = require('../Models');
+const { User, Thought } = require('../Models');
 const filter = require('../utils/filterObject');
 
 /**-------------------------
@@ -164,6 +164,11 @@ exports.deleteUser = async (req, res) => {
         },
       });
     }
+
+    // Delete a users associated thoughts
+    const associatedThoughts = await Thought.deleteMany({
+      username: req.params.id,
+    });
 
     res.status(204).json({
       status: 'success',
