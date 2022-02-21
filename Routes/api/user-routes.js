@@ -9,4 +9,10 @@ router
   .put(userController.updateUser)
   .delete(userController.deleteUser);
 
+// Friend Routes
+router
+  .route('/:userId/friends/:friendId')
+  .post(userController.addFriend)
+  .delete(userController.deleteFriend);
+
 module.exports = router;

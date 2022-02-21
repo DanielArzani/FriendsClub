@@ -185,3 +185,67 @@ exports.deleteUser = async (req, res) => {
     });
   }
 };
+
+/**-------------------------
+ *        ADD FRIEND
+ *------------------------**/
+exports.addFriend = async (req, res) => {
+  try {
+    const friend = await User.findByIdAndUpdate(
+      req.params.userId,
+      {
+        $push: { friends: req.params.friendId },
+      },
+      { new: true, runValidators: true }
+    );
+
+    // Check to see if user exists
+    if (!friend) {
+      res.status(404).json({
+        status: 'fail',
+        data: {
+          message: 'No user found with this ID',
+        },
+      });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        friend,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      data: {
+        message: error,
+      },
+    });
+  }
+};
+
+/**-------------------------
+ *      DELETE FRIEND
+ *------------------------**/
+exports.deleteFriend = async (req, res) => {
+  try {
+    const friend = await User.findByIdAndUpdate(req.params.userId, {
+      $pull: { friends: req.params.friendId },
+    });
+
+    res.status(204).json({
+      status: 'success',
+      data: {
+        data: null,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      data: {
+        message: error,
+      },
+    });
+  }
+};
