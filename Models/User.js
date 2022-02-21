@@ -21,7 +21,12 @@ const userSchema = new mongoose.Schema(
         ref: 'Thought',
       },
     ],
-    friends: [Array],
+    friends: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   {
     toJSON: { virtuals: true, getters: true },
