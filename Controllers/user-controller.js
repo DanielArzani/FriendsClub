@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 
 const { User } = require('../Models');
+const filter = require('../utils/filterObject');
 
 /**-------------------------
  *      GET ALL USERS
@@ -63,10 +64,12 @@ exports.getUser = async (req, res) => {
 /**-------------------------
  *      CREATE USER
  *------------------------**/
-//! For security reasons pass in what they are allowed to enter instead of req.body
 exports.createUser = async (req, res) => {
   try {
-    const user = await User.create(req.body);
+    // For security reasons pass in what they are allowed to enter instead of req.body
+    const filteredObj = filter(req.body, 'username', 'email');
+
+    const user = await User.create(filteredObj);
 
     res.status(201).json({
       status: 'success',
@@ -98,11 +101,12 @@ exports.createUser = async (req, res) => {
 /**-------------------------
  *      UPDATE USER
  *------------------------**/
-//! For security reasons pass in what they are allowed to change
 exports.updateUser = async (req, res) => {
-  console.log(req.body);
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+    // For security reasons pass in what they are allowed to change
+    const filteredObj = filter(req.body, 'username', 'email');
+
+    const user = await User.findByIdAndUpdate(req.params.id, filteredObj, {
       new: true,
       runValidators: true,
     });

@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 const { User, Thought } = require('../Models');
+const filter = require('../utils/filterObject');
 
 /**-------------------------
  *    GET ALL THOUGHTS
  *------------------------**/
 exports.getThoughts = async (req, res) => {
   try {
-    const thoughts = await Thought.find({});
+    const thoughts = await Thought.find({}).sort({ createdAt: 'desc' });
 
     res.status(200).json({
       status: 'success',
@@ -62,10 +63,11 @@ exports.getThought = async (req, res) => {
 /**-------------------------
  *     CREATE THOUGHT
  *------------------------**/
-//! For security reasons pass in what they are allowed to enter instead of req.body
 exports.createThought = async (req, res) => {
   try {
-    const thought = await Thought.create(req.body);
+    const filteredObj = filter(req.body, 'thoughtText', 'username');
+
+    const thought = await Thought.create(filteredObj);
 
     res.status(201).json({
       status: 'success',
@@ -86,13 +88,18 @@ exports.createThought = async (req, res) => {
 /**-------------------------
  *     UPDATE THOUGHT
  *------------------------**/
-//! For security reasons pass in what they are allowed to change
 exports.updateThought = async (req, res) => {
   try {
-    const thought = await Thought.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const filteredObj = filter(req.body, 'thoughtText');
+
+    const thought = await Thought.findByIdAndUpdate(
+      req.params.id,
+      filteredObj,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     // Check to see if thought exists
     if (!thought) {
