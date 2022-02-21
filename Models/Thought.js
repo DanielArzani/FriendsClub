@@ -78,6 +78,9 @@ const thoughtSchema = new mongoose.Schema(
  *        VIRTUALS
  *------------------------**/
 // Retrieves the length of the thought's reactions array field on query
+thoughtSchema.virtual('reactionCount').get(function () {
+  return this.reactions.length;
+});
 
 const Thought = mongoose.model('Thought', thoughtSchema);
 module.exports = Thought;
