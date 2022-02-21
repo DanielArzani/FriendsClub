@@ -27,7 +27,10 @@ const thoughtSchema = new mongoose.Schema(
       },
     },
     // User who created the thought
-    // username:{}
+    username: {
+      type: String,
+      required: [true, 'A thought must have a user'],
+    },
   },
   // Reactions to thoughts (kind of like replies)
   //   reactions: {}
