@@ -26,6 +26,11 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+/**-------------------------
+ *        VIRTUALS
+ *------------------------**/
+// Retrieves the length of the user's friends array field on query
+
 const User = new mongoose.model('User', userSchema);
 
 module.exports = User;

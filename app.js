@@ -1,7 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 
-const { userRoutes } = require('./Routes/api/');
+const { userRoutes, thoughtRoutes } = require('./Routes/api/');
 
 const app = express();
 
@@ -21,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
  *          ROUTES
  *------------------------**/
 app.use('/api/users', userRoutes);
+app.use('/api/thoughts', thoughtRoutes);
 
 // Will catch any requests (Get, Post, etc...) to non-specified routes
 app.all('*', (req, res, next) => {
