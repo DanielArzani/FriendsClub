@@ -9,7 +9,7 @@ const filter = require('../utils/filterObject');
  *------------------------**/
 exports.getUsers = async (req, res) => {
   try {
-    const users = await User.find({}).populate('thoughts');
+    const users = await User.find({});
 
     res.status(200).json({
       status: 'success',
@@ -33,7 +33,9 @@ exports.getUsers = async (req, res) => {
  *------------------------**/
 exports.getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id)
+      .populate('thoughts')
+      .populate('friends');
 
     // Check to see if user exists
     if (!user) {
