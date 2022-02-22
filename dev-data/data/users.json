@@ -1,37 +1,55 @@
 [
   {
-    "_id": "5c88fa8cf4afda39709c2954",
+    "_id": "62143882bc64787dbab01f08",
     "username": "daniel",
-    "email": "daniel@gmail.com"
+    "email": "daniel@gmail.com",
+    "thoughts": [
+      "621438d1bc64787dbab01f0d",
+      "621440ab260141890d1bd103",
+      "621440b8260141890d1bd106"
+    ],
+    "friends": ["621438a8bc64787dbab01f0a"]
   },
   {
-    "_id": "5c88fa8cf4afda39709c2955",
+    "_id": "621438a8bc64787dbab01f0a",
     "username": "michael",
-    "email": "michael@gmail.com"
+    "email": "michael@gmail.com",
+    "thoughts": [],
+    "friends": ["5c88fa8cf4afda39709c2956"]
   },
   {
     "_id": "5c88fa8cf4afda39709c2956",
     "username": "night",
-    "email": "night@gmail.com"
+    "email": "night@gmail.com",
+    "thoughts": [],
+    "friends": []
   },
   {
     "_id": "5c88fa8cf4afda39709c2957",
     "username": "bob",
-    "email": "bob@gmail.com"
+    "email": "bob@gmail.com",
+    "thoughts": [],
+    "friends": []
   },
   {
     "_id": "5c88fa8cf4afda39709c2958",
     "username": "john",
-    "email": "john@gmail.com"
+    "email": "john@gmail.com",
+    "thoughts": [],
+    "friends": []
   },
   {
     "_id": "5c88fa8cf4afda39709c2959",
     "username": "stacy",
-    "email": "stacy@gmail.com"
+    "email": "stacy@gmail.com",
+    "thoughts": [],
+    "friends": ["62143882bc64787dbab01f08"]
   },
   {
     "_id": "5c88fa8cf4afda39709c2951",
     "username": "anna",
-    "email": "anna@gmail.com"
+    "email": "anna@gmail.com",
+    "thoughts": [],
+    "friends": []
   }
 ]

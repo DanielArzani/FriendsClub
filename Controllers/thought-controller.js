@@ -31,7 +31,7 @@ exports.getThoughts = async (req, res) => {
  *------------------------**/
 exports.getThought = async (req, res) => {
   try {
-    const thought = await Thought.findById(req.params.id);
+    const thought = await Thought.findById(req.params.thoughtId);
 
     // Check to see if thought exists
     if (!thought) {
@@ -69,12 +69,23 @@ exports.createThought = async (req, res) => {
 
     const thought = await Thought.create({
       thoughtText: req.body.thoughtText,
-      username: req.params.userId,
+      username: req.body.username,
+      user_id: req.body.userId,
     });
 
     const updatedUser = await User.findByIdAndUpdate(req.params.userId, {
       $push: { thoughts: thought },
     });
+
+    if (!updatedUser) {
+      res.status(404).json({
+        status: 'fail',
+        data: {
+          message: 'No user with that ID exists',
+        },
+      });
+      return;
+    }
 
     res.status(201).json({
       status: 'success',
@@ -100,7 +111,7 @@ exports.updateThought = async (req, res) => {
     const filteredObj = filter(req.body, 'thoughtText');
 
     const thought = await Thought.findByIdAndUpdate(
-      req.params.id,
+      req.params.thoughtId,
       filteredObj,
       {
         new: true,
@@ -139,8 +150,9 @@ exports.updateThought = async (req, res) => {
  *     DELETE THOUGHT
  *------------------------**/
 exports.deleteThought = async (req, res) => {
+  console.log(req.body.userId);
   try {
-    const thought = await Thought.findByIdAndDelete(req.params.id);
+    const thought = await Thought.findByIdAndDelete(req.params.thoughtId);
 
     // Check to see if thought exists
     if (!thought) {
@@ -148,6 +160,27 @@ exports.deleteThought = async (req, res) => {
         status: 'success',
         data: {
           message: 'No thought exists with that ID',
+        },
+      });
+      return;
+    }
+
+    // Find user and delete associated thought
+    console.log(req.body.userId);
+    const user = await User.findByIdAndUpdate(
+      req.body.userId,
+      {
+        $pull: { thoughts: req.params.thoughtId },
+      },
+      { new: true, runValidators: true }
+    );
+
+    // Check if user exists
+    if (!user) {
+      res.status(404).json({
+        status: 'fail',
+        data: {
+          message: 'No user found with this ID',
         },
       });
       return;
@@ -219,6 +252,16 @@ exports.deleteReaction = async (req, res) => {
         runValidators: true,
       }
     );
+
+    if (!reaction) {
+      res.status(404).json({
+        status: 'fail',
+        data: {
+          message: 'No reaction or thought found with that ID',
+        },
+      });
+      return;
+    }
 
     res.status(204).json({
       status: 'success',

@@ -2,7 +2,7 @@
 const fs = require('fs');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const { User } = require('../../Models');
+const { User, Thought } = require('../../Models');
 
 // We can use this in any file with out requiring it because the process is the same for every file
 // Note that this must be before app
@@ -24,11 +24,16 @@ const users = JSON.parse(
   // fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')
   fs.readFileSync(`${__dirname}/users.json`, 'utf-8')
 );
+const thoughts = JSON.parse(
+  // fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')
+  fs.readFileSync(`${__dirname}/thoughts.json`, 'utf-8')
+);
 
 // Import data into DB
 const importData = async () => {
   try {
     await User.create(users);
+    await Thought.create(thoughts);
   } catch (error) {
     console.log(error);
   }
@@ -41,6 +46,7 @@ const deleteData = async () => {
   try {
     // Passing in nothing will delete all documents in a certain collection
     await User.deleteMany();
+    await Thought.deleteMany();
     console.log('Data successfully deleted');
   } catch (error) {
     console.log(error);

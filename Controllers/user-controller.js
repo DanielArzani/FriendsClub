@@ -33,7 +33,7 @@ exports.getUsers = async (req, res) => {
  *------------------------**/
 exports.getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id)
+    const user = await User.findById(req.params.userId)
       .populate('thoughts')
       .populate('friends');
 
@@ -108,7 +108,7 @@ exports.updateUser = async (req, res) => {
     // For security reasons pass in what they are allowed to change
     const filteredObj = filter(req.body, 'username', 'email');
 
-    const user = await User.findByIdAndUpdate(req.params.id, filteredObj, {
+    const user = await User.findByIdAndUpdate(req.params.userId, filteredObj, {
       new: true,
       runValidators: true,
     });
@@ -121,6 +121,7 @@ exports.updateUser = async (req, res) => {
           message: 'No user found with this ID',
         },
       });
+      return;
     }
 
     res.status(200).json({
@@ -155,7 +156,7 @@ exports.updateUser = async (req, res) => {
  *------------------------**/
 exports.deleteUser = async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
+    const user = await User.findByIdAndDelete(req.params.userId);
 
     // Check to see if user exists
     if (!user) {
@@ -168,9 +169,7 @@ exports.deleteUser = async (req, res) => {
     }
 
     // Delete a users associated thoughts
-    const associatedThoughts = await Thought.deleteMany({
-      username: req.params.id,
-    });
+    await Thought.deleteMany({ username: req.body.username });
 
     res.status(204).json({
       status: 'success',
@@ -209,6 +208,7 @@ exports.addFriend = async (req, res) => {
           message: 'No user found with this ID',
         },
       });
+      return;
     }
 
     res.status(200).json({
@@ -235,6 +235,17 @@ exports.deleteFriend = async (req, res) => {
     const friend = await User.findByIdAndUpdate(req.params.userId, {
       $pull: { friends: req.params.friendId },
     });
+
+    // Check to see if user exists
+    if (!friend) {
+      res.status(404).json({
+        status: 'fail',
+        data: {
+          message: 'No user found with this ID',
+        },
+      });
+      return;
+    }
 
     res.status(204).json({
       status: 'success',

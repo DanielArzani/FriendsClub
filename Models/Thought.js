@@ -2,35 +2,42 @@ const mongoose = require('mongoose');
 const { format } = require('timeago.js');
 
 // Sub-document ~ Reactions to thoughts
-const reactionSchema = new mongoose.Schema({
-  // set custom id to avoid confusion with parent thought _id
-  reactionId: {
-    type: mongoose.Schema.Types.ObjectId,
-    // Will generate a new ObjectId
-    default: new mongoose.Types.ObjectId(),
-  },
-  reactionBody: {
-    type: String,
-    required: [true, 'A reaction requires a reactionBody'],
-    minLength: [1, 'A reaction must be at least 1 character'],
-    maxLength: [280, 'A reaction must be at most 280 characters'],
-  },
-  // User who posted the reaction
-  username: {
-    type: String,
-    required: [true, 'A reaction must have a user'],
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-    // See thoughtSchema createdAt for comments on this
-    get: (dateInstance) => {
-      const stringDate = dateInstance.toString();
-      const parsedStringDate = Date.parse(stringDate);
-      return format(parsedStringDate);
+const reactionSchema = new mongoose.Schema(
+  {
+    // set custom id to avoid confusion with parent thought _id
+    reactionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      // Will generate a new ObjectId
+      default: new mongoose.Types.ObjectId(),
+    },
+    reactionBody: {
+      type: String,
+      required: [true, 'A reaction requires a reactionBody'],
+      minLength: [1, 'A reaction must be at least 1 character'],
+      maxLength: [280, 'A reaction must be at most 280 characters'],
+    },
+    // A name or alias a user wants to take
+    username: {
+      type: String,
+      required: [true, 'A reaction must have a username'],
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      // See thoughtSchema createdAt for comments on this
+      get: (dateInstance) => {
+        const stringDate = dateInstance.toString();
+        const parsedStringDate = Date.parse(stringDate);
+        return format(parsedStringDate);
+      },
     },
   },
-});
+  {
+    toJSON: { virtuals: true, getters: true },
+    toObject: { virtuals: true },
+    id: false,
+  }
+);
 
 const thoughtSchema = new mongoose.Schema(
   {

@@ -5,9 +5,8 @@ router.route('/').get(thoughtController.getThoughts);
 
 router.route('/:userId').post(thoughtController.createThought);
 
-// /:id here is thoughtId
 router
-  .route('/:id')
+  .route('/:thoughtId')
   .get(thoughtController.getThought)
   .put(thoughtController.updateThought)
   .delete(thoughtController.deleteThought);
