@@ -1,0 +1,27 @@
+[
+  {
+    "_id": "621438d1bc64787dbab01f0d",
+    "thoughtText": "What should I eat for dinner?",
+    "username": "daniel",
+    "reactions": [
+      {
+        "reactionId": "62143797bc64787dbab01efa",
+        "reactionBody": "I think you should just stick with veggies and forget the meat!",
+        "username": "michael",
+        "_id": "6214397bbc64787dbab01f15"
+      }
+    ]
+  },
+  {
+    "_id": "621440b8260141890d1bd106",
+    "thoughtText": "My cat, Night, so so adorable!",
+    "username": "daniel",
+    "reactions": []
+  },
+  {
+    "_id": "621440ab260141890d1bd103",
+    "thoughtText": "Sunday is my favourite day of the week",
+    "username": "daniel",
+    "reactions": []
+  }
+]
