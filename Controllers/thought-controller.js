@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const { User, Thought } = require('../Models');
 const filter = require('../utils/filterObject');
 
@@ -65,19 +64,9 @@ exports.getThought = async (req, res) => {
  *------------------------**/
 exports.createThought = async (req, res) => {
   try {
-    // const filteredObj = filter(req.body, 'thoughtText', 'username');
+    const user = await User.findById(req.body.userId);
 
-    const thought = await Thought.create({
-      thoughtText: req.body.thoughtText,
-      username: req.body.username,
-      user_id: req.body.userId,
-    });
-
-    const updatedUser = await User.findByIdAndUpdate(req.params.userId, {
-      $push: { thoughts: thought },
-    });
-
-    if (!updatedUser) {
+    if (!user) {
       res.status(404).json({
         status: 'fail',
         data: {
@@ -87,10 +76,19 @@ exports.createThought = async (req, res) => {
       return;
     }
 
+    const thought = await Thought.create({
+      thoughtText: req.body.thoughtText,
+      username: req.body.username,
+    });
+
+    await User.findByIdAndUpdate(req.body.userId, {
+      $push: { thoughts: thought },
+    });
+
     res.status(201).json({
       status: 'success',
       data: {
-        thought,
+        thought: thought,
       },
     });
   } catch (error) {
@@ -108,7 +106,21 @@ exports.createThought = async (req, res) => {
  *------------------------**/
 exports.updateThought = async (req, res) => {
   try {
+    // Only thing allowed to be changed
     const filteredObj = filter(req.body, 'thoughtText');
+
+    // Check to see if user exists
+    const user = await User.findById(req.body.userId);
+
+    if (!user) {
+      res.status(404).json({
+        status: 'fail',
+        data: {
+          message: 'No user exists with that ID',
+        },
+      });
+      return;
+    }
 
     const thought = await Thought.findByIdAndUpdate(
       req.params.thoughtId,
@@ -122,7 +134,7 @@ exports.updateThought = async (req, res) => {
     // Check to see if thought exists
     if (!thought) {
       res.status(404).json({
-        status: 'success',
+        status: 'fail',
         data: {
           message: 'No thought exists with that ID',
         },
@@ -150,7 +162,6 @@ exports.updateThought = async (req, res) => {
  *     DELETE THOUGHT
  *------------------------**/
 exports.deleteThought = async (req, res) => {
-  console.log(req.body.userId);
   try {
     const thought = await Thought.findByIdAndDelete(req.params.thoughtId);
 
@@ -160,27 +171,6 @@ exports.deleteThought = async (req, res) => {
         status: 'success',
         data: {
           message: 'No thought exists with that ID',
-        },
-      });
-      return;
-    }
-
-    // Find user and delete associated thought
-    console.log(req.body.userId);
-    const user = await User.findByIdAndUpdate(
-      req.body.userId,
-      {
-        $pull: { thoughts: req.params.thoughtId },
-      },
-      { new: true, runValidators: true }
-    );
-
-    // Check if user exists
-    if (!user) {
-      res.status(404).json({
-        status: 'fail',
-        data: {
-          message: 'No user found with this ID',
         },
       });
       return;
@@ -212,7 +202,7 @@ exports.createReaction = async (req, res) => {
     // 3) $push into reactions field array
     const filteredObj = filter(req.body, 'reactionBody', 'username');
 
-    const reaction = await Thought.findByIdAndUpdate(
+    const thought = await Thought.findByIdAndUpdate(
       req.params.thoughtId,
       { $push: { reactions: filteredObj } },
       {
@@ -224,7 +214,7 @@ exports.createReaction = async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: {
-        reaction,
+        thought,
       },
     });
   } catch (error) {
@@ -244,20 +234,15 @@ exports.deleteReaction = async (req, res) => {
   try {
     // 1) Find a Thought through their ID and a Reaction that belongs to it through its reactionID
     // 2) $pull from reactions field array
-    const reaction = await Thought.findByIdAndUpdate(
-      req.params.thoughtId,
-      { $pull: { reactions: req.body } },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const thought = await Thought.findByIdAndUpdate(req.params.thoughtId, {
+      $pull: { reactions: { reactionId: req.body.reactionId } },
+    });
 
-    if (!reaction) {
+    if (!thought) {
       res.status(404).json({
         status: 'fail',
         data: {
-          message: 'No reaction or thought found with that ID',
+          message: 'No thought found with that ID',
         },
       });
       return;

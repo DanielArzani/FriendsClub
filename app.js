@@ -5,11 +5,11 @@ const { userRoutes, thoughtRoutes } = require('./Routes/api/');
 
 const app = express();
 
-console.log(process.env.NODE_ENV);
-// Only use morgan in development environment
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
+// console.log(process.env.NODE_ENV);
+// // Only use morgan in development environment
+// if (process.env.NODE_ENV === 'development') {
+//   app.use(morgan('dev'));
+// }
 
 /**-------------------------
  *    GLOBAL MIDDLEWARE

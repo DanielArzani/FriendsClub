@@ -4,7 +4,8 @@
   "rules": {
     "prettier/prettier": "error",
     "spaced-comment": "off",
-    "single": "single",
+    "avoidEscape": true,
+    "allowTemplateLiterals": true,
     "no-console": "warn",
     "consistent-return": "off",
     "func-names": "off",

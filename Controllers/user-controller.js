@@ -1,6 +1,3 @@
-// Here to make so I can have autocomplete while coding
-const mongoose = require('mongoose');
-
 const { User, Thought } = require('../Models');
 const filter = require('../utils/filterObject');
 
@@ -45,10 +42,12 @@ exports.getUser = async (req, res) => {
           message: 'No user found with this ID',
         },
       });
+      return;
     }
 
     res.status(200).json({
       status: 'success',
+      results: user.thoughts.length,
       data: {
         user,
       },
@@ -192,7 +191,21 @@ exports.deleteUser = async (req, res) => {
  *------------------------**/
 exports.addFriend = async (req, res) => {
   try {
-    const friend = await User.findByIdAndUpdate(
+    // Check if friend exists
+    const friend = await User.findById(req.params.friendId);
+
+    // Check to see if friend exists
+    if (!friend) {
+      res.status(404).json({
+        status: 'fail',
+        data: {
+          message: 'No friend found with this ID',
+        },
+      });
+      return;
+    }
+
+    const user = await User.findByIdAndUpdate(
       req.params.userId,
       {
         $push: { friends: req.params.friendId },
@@ -201,7 +214,7 @@ exports.addFriend = async (req, res) => {
     );
 
     // Check to see if user exists
-    if (!friend) {
+    if (!user) {
       res.status(404).json({
         status: 'fail',
         data: {
@@ -214,7 +227,7 @@ exports.addFriend = async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: {
-        friend,
+        user,
       },
     });
   } catch (error) {
@@ -232,16 +245,27 @@ exports.addFriend = async (req, res) => {
  *------------------------**/
 exports.deleteFriend = async (req, res) => {
   try {
-    const friend = await User.findByIdAndUpdate(req.params.userId, {
+    const user = await User.findByIdAndUpdate(req.params.userId, {
       $pull: { friends: req.params.friendId },
     });
 
     // Check to see if user exists
-    if (!friend) {
+    if (!user) {
       res.status(404).json({
         status: 'fail',
         data: {
           message: 'No user found with this ID',
+        },
+      });
+      return;
+    }
+
+    // Check if friend is already part of friends array
+    if (req.params.friendId !== user.friends[0].toString()) {
+      res.status(404).json({
+        status: 'fail',
+        data: {
+          message: 'No friend found with this ID',
         },
       });
       return;
