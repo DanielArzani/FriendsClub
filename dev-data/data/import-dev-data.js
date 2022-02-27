@@ -8,14 +8,19 @@ const { User, Thought } = require('../../Models');
 // Note that this must be before app
 dotenv.config({ path: './config.env' });
 
+//* USES HOSTED DB
 // You can also just add the password in the config.env file
-const DB = process.env.DATABASE.replace(
-  '<PASSWORD>',
-  process.env.DATABASE_PASSWORD
-);
+// const DB = process.env.DATABASE.replace(
+//   '<PASSWORD>',
+//   process.env.DATABASE_PASSWORD
+// );
 
-// These options are only necessary because we're using an old version of mongoose
-mongoose.connect(DB).then(() => {
+// mongoose.connect(DB).then(() => {
+//   console.log('DB connection successful');
+// });
+
+//* USING LOCAL DB
+mongoose.connect('mongodb://localhost:27017/FriendsProject').then(() => {
   console.log('DB connection successful');
 });
 
